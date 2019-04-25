@@ -355,6 +355,29 @@ def login_with_sms_code(phonenumber, code):
         raise Exception(data)
 
 
+def login_with_weibo(username, password):
+    """
+    使用微博方式登陆 如果不好使，可能是微博账号与抖音未绑定，需要手动在app上登陆绑定一遍
+    :param username:
+    :param password:
+    :return: 登陆之后返回的数据 session_key 为登陆后的cookie值
+    """
+    params = {
+        'username': username,
+        'password': password,
+        'secret_key': SECRET_KEY  # 密钥
+    }
+    res = requests.get(SERVICE_URL + 'login_with_weibo', params=params)
+    data = res.json()
+    res.close()
+    if data.get('code') != 200:
+        raise Exception(data.get('msg'))
+
+    data = data.get('data')
+
+    return data
+
+
 def get_call_count():
     """
     获取接口请求次数计总次数
@@ -431,6 +454,9 @@ def test():
 
     data = search_video('美女', cursor=0)
     print(data)
+
+    # data = login_with_weibo(username='xxxx', password='xxxx') # 使用微博方式登陆 如果不好使，可能是微博账号与抖音未绑定，需要手动在app上登陆绑定一遍
+    # print(data)
 
     data = get_call_count()
     print(data)
